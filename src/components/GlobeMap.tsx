@@ -151,13 +151,8 @@ export function GlobeMap() {
         const dx = e.clientX - lastMouseRef.current.x;
         const dy = e.clientY - lastMouseRef.current.y;
         rotYRef.current += dx * 0.005;
-        rotXRef.current += dy * 0.005;
-        // Clamp X rotation to avoid flipping
-        rotXRef.current = Math.max(
-          -Math.PI / 2,
-          Math.min(Math.PI / 2, rotXRef.current),
-        );
-        velXRef.current = dy * 0.005;
+        // rotXRef.current is locked — no vertical tilt during drag
+        velXRef.current = 0; // no vertical inertia
         velYRef.current = dx * 0.005;
         lastMouseRef.current = { x: e.clientX, y: e.clientY };
       }
@@ -262,12 +257,9 @@ export function GlobeMap() {
 
       // ── Auto-rotate / inertia ──────────────────────────────
       if (!draggingRef.current) {
-        // Inertia decay
-        if (Math.abs(velYRef.current) > 0.0001 || Math.abs(velXRef.current) > 0.0001) {
+        // Inertia decay (horizontal only — vertical tilt is locked)
+        if (Math.abs(velYRef.current) > 0.0001) {
           rotYRef.current += velYRef.current;
-          rotXRef.current += velXRef.current;
-          rotXRef.current = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotXRef.current));
-          velXRef.current *= 0.95;
           velYRef.current *= 0.95;
         } else {
           // Auto-rotate
