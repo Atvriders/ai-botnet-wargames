@@ -25,7 +25,7 @@ const styles: Record<string, CSSProperties> = {
   },
   header: {
     fontFamily: 'var(--font-hud)',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 700,
     color: '#FFB300',
     letterSpacing: 2,
@@ -43,7 +43,7 @@ const styles: Record<string, CSSProperties> = {
   },
   tierHeader: {
     fontFamily: 'var(--font-hud)',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 700,
     color: '#337744',
     letterSpacing: 2,
@@ -74,7 +74,7 @@ const styles: Record<string, CSSProperties> = {
     minWidth: 0,
   },
   name: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 600,
     fontFamily: 'var(--font-hud)',
     letterSpacing: 0.5,

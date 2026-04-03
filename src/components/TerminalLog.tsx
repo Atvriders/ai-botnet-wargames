@@ -32,7 +32,7 @@ const styles: Record<string, CSSProperties> = {
   },
   headerText: {
     fontFamily: 'var(--font-hud)',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 600,
     color: '#337744',
     textTransform: 'uppercase',

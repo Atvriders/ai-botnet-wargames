@@ -50,7 +50,7 @@ const styles: Record<string, CSSProperties> = {
     lineHeight: 1,
   },
   statValue: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 700,
     lineHeight: 1.2,
   },
@@ -179,9 +179,9 @@ export function HudBar() {
                 opacity: highlightFilter === 'infected' ? 1 : 0.7,
               }}
             >
-              {nodesInfected} <span style={{ fontSize: 11 }}>inf</span>
+              {nodesInfected} <span style={{ fontSize: 10 }}>inf</span>
             </span>
-            <span style={{ color: '#337744', fontSize: 11 }}> | </span>
+            <span style={{ color: '#337744', fontSize: 10 }}> | </span>
             <span
               onClick={() => setHighlightFilter('down')}
               style={{
@@ -191,11 +191,11 @@ export function HudBar() {
                 opacity: highlightFilter === 'down' ? 1 : 0.7,
               }}
             >
-              {nodesDown} <span style={{ fontSize: 11 }}>down</span>
+              {nodesDown} <span style={{ fontSize: 10 }}>down</span>
             </span>
-            <span style={{ color: '#337744', fontSize: 11 }}> | </span>
+            <span style={{ color: '#337744', fontSize: 10 }}> | </span>
             <span style={{ color: '#00FF41' }}>{totalNodes}</span>
-            <span style={{ color: '#337744', fontSize: 11 }}> total</span>
+            <span style={{ color: '#337744', fontSize: 10 }}> total</span>
           </span>
         </div>
         <div style={styles.separator} />

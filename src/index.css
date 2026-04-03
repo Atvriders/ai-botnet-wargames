@@ -211,7 +211,7 @@ body::after {
 .panel-header {
   font-family: var(--font-hud);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 2px;
   padding: 8px 12px;

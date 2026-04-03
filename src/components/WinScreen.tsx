@@ -48,7 +48,7 @@ const styles: Record<string, CSSProperties> = {
     justifyContent: 'space-between',
     padding: '6px 0',
     borderBottom: '1px solid rgba(255,0,64,0.08)',
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'var(--font-terminal)',
   },
   statLabel: {
@@ -61,7 +61,7 @@ const styles: Record<string, CSSProperties> = {
     fontWeight: 700,
   },
   restartBtn: {
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'var(--font-terminal)',
     padding: '12px 40px',
     border: '2px solid #FF0040',

@@ -27,7 +27,7 @@ const styles: Record<string, CSSProperties> = {
   },
   sectionHeader: {
     fontFamily: 'var(--font-hud)',
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: 700,
     letterSpacing: 2,
     textTransform: 'uppercase',
@@ -61,20 +61,20 @@ const styles: Record<string, CSSProperties> = {
     minWidth: 0,
   },
   attackName: {
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: 'var(--font-hud)',
     fontWeight: 600,
     lineHeight: 1.2,
   },
   attackMeta: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#553333',
     display: 'flex',
     gap: 8,
     marginTop: 1,
   },
   typeBadge: {
-    fontSize: 11,
+    fontSize: 10,
     padding: '1px 4px',
     borderRadius: 2,
     textTransform: 'uppercase',
@@ -219,7 +219,7 @@ export function AttackPanel({ selectedNode, onInfectNode, onAttackNode }: Attack
           ))}
           {locked.length > 0 && (
             <div style={{
-              fontSize: 11, color: '#333', padding: '6px 4px',
+              fontSize: 10, color: '#333', padding: '6px 4px',
               textTransform: 'uppercase', letterSpacing: 1,
               fontFamily: 'var(--font-hud)',
             }}>
@@ -269,7 +269,7 @@ export function AttackPanel({ selectedNode, onInfectNode, onAttackNode }: Attack
         {node ? (
           <div style={styles.nodeInfo}>
             <div style={{
-              fontSize: 14, fontFamily: 'var(--font-hud)', fontWeight: 700,
+              fontSize: 15, fontFamily: 'var(--font-hud)', fontWeight: 700,
               color: node.status === 'down' ? '#555' :
                      node.status === 'infected' ? '#FFB300' :
                      node.status === 'attacking' ? '#FF0040' : '#00FF41',
@@ -373,7 +373,7 @@ export function AttackPanel({ selectedNode, onInfectNode, onAttackNode }: Attack
           <div style={styles.noSelection}>
             Select a node on the map to view details.
             <br /><br />
-            <span style={{ color: '#224422', fontSize: 11 }}>
+            <span style={{ color: '#224422', fontSize: 10 }}>
               Left-click: Select &bull; Right-click: Infect/Attack
             </span>
           </div>
