@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0d1117;
+  --bg-panel: #0c1218;
+  --bg-panel-hover: #111a24;
+  --green-primary: #00FF41;
+  --green-dim: #00cc33;
+  --green-dark: #003311;
+  --green-glow: rgba(0, 255, 65, 0.3);
+  --green-bg: rgba(0, 255, 65, 0.05);
+  --red-threat: #FF0040;
+  --red-dim: #cc0033;
+  --red-dark: #330011;
+  --red-glow: rgba(255, 0, 64, 0.3);
+  --blue-cyber: #00D4FF;
+  --blue-dim: #00a8cc;
+  --blue-dark: #002233;
+  --blue-glow: rgba(0, 212, 255, 0.3);
+  --amber-warning: #FFB300;
+  --amber-dim: #cc8f00;
+  --amber-dark: #332400;
+  --amber-glow: rgba(255, 179, 0, 0.3);
+  --text-primary: #00FF41;
+  --text-secondary: #00cc33;
+  --text-dim: #337744;
+  --text-muted: #2a4a2a;
+  --border-green: rgba(0, 255, 65, 0.2);
+  --border-red: rgba(255, 0, 64, 0.2);
+  --border-blue: rgba(0, 212, 255, 0.2);
+  --font-terminal: 'Share Tech Mono', 'Courier New', monospace;
+  --font-hud: 'Rajdhani', 'Arial', sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-terminal);
+  font-size: 13px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 65, 0.015) 2px,
+    rgba(0, 255, 65, 0.015) 4px
+  );
+  mix-blend-mode: screen;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--green-dark);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--green-dim);
+}
+
+/* Selection */
+::selection {
+  background: var(--green-primary);
+  color: var(--bg-primary);
+}
+
+/* Keyframe Animations */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes glow {
+  0%, 100% { text-shadow: 0 0 5px var(--green-primary), 0 0 10px var(--green-primary), 0 0 20px var(--green-primary); }
+  50% { text-shadow: 0 0 10px var(--green-primary), 0 0 20px var(--green-primary), 0 0 40px var(--green-primary), 0 0 60px var(--green-primary); }
+}
+
+@keyframes glow-red {
+  0%, 100% { text-shadow: 0 0 5px var(--red-threat), 0 0 10px var(--red-threat); }
+  50% { text-shadow: 0 0 10px var(--red-threat), 0 0 20px var(--red-threat), 0 0 40px var(--red-threat); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  5% { opacity: 0.3; }
+  10% { opacity: 1; }
+  15% { opacity: 0.5; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  85% { opacity: 0.4; }
+  90% { opacity: 1; }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes infect-spread {
+  0% { box-shadow: 0 0 0 0 rgba(255, 0, 64, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 0, 64, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 0, 64, 0); }
+}
+
+@keyframes attack-pulse {
+  0% { transform: scale(1); filter: brightness(1); }
+  50% { transform: scale(1.05); filter: brightness(1.5); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+@keyframes node-down {
+  0% { transform: scale(1); opacity: 1; }
+  30% { transform: scale(1.5); opacity: 0.8; }
+  60% { transform: scale(0.8); opacity: 0.4; }
+  100% { transform: scale(0.6); opacity: 0.2; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  10% { transform: translate(-3px, 2px); }
+  20% { transform: translate(3px, -2px); }
+  30% { transform: translate(-2px, -1px); }
+  40% { transform: translate(2px, 1px); }
+  50% { transform: translate(-1px, 2px); }
+  60% { transform: translate(1px, -1px); }
+  70% { transform: translate(3px, 1px); }
+  80% { transform: translate(-2px, -2px); }
+  90% { transform: translate(1px, 2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes healthDrain {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Utility classes */
+.text-green { color: var(--green-primary); }
+.text-red { color: var(--red-threat); }
+.text-blue { color: var(--blue-cyber); }
+.text-amber { color: var(--amber-warning); }
+.text-dim { color: var(--text-dim); }
+
+.glow-green { text-shadow: 0 0 5px var(--green-glow), 0 0 10px var(--green-glow); }
+.glow-red { text-shadow: 0 0 5px var(--red-glow), 0 0 10px var(--red-glow); }
+.glow-blue { text-shadow: 0 0 5px var(--blue-glow), 0 0 10px var(--blue-glow); }
+
+.pulse { animation: pulse 2s ease-in-out infinite; }
+.flicker { animation: flicker 3s ease-in-out infinite; }
+
+/* Panel base styles */
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-green);
+  position: relative;
+}
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green-primary), transparent);
+  opacity: 0.3;
+}
+
+.panel-header {
+  font-family: var(--font-hud);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-green);
+  background: rgba(0, 255, 65, 0.03);
+}
+
+/* Button base */
+.btn {
+  font-family: var(--font-terminal);
+  font-size: 11px;
+  padding: 4px 10px;
+  border: 1px solid var(--border-green);
+  background: var(--bg-secondary);
+  color: var(--green-primary);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+.btn:hover {
+  background: var(--green-dark);
+  border-color: var(--green-primary);
+  box-shadow: 0 0 8px var(--green-glow);
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.btn-red {
+  border-color: var(--border-red);
+  color: var(--red-threat);
+}
+.btn-red:hover {
+  background: var(--red-dark);
+  border-color: var(--red-threat);
+  box-shadow: 0 0 8px var(--red-glow);
+}
+.btn-amber {
+  border-color: rgba(255, 179, 0, 0.2);
+  color: var(--amber-warning);
+}
+.btn-amber:hover {
+  background: var(--amber-dark);
+  border-color: var(--amber-warning);
+  box-shadow: 0 0 8px var(--amber-glow);
+}
+
+/* Health bar base */
+.health-bar {
+  height: 8px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-green);
+  border-radius: 1px;
+  overflow: hidden;
+  position: relative;
+}
+.health-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+  position: relative;
+}
+.health-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+}

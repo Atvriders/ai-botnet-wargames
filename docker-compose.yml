@@ -1,0 +1,6 @@
+services:
+  ai-botnet-wargames:
+    image: ghcr.io/atvriders/ai-botnet-wargames:latest
+    ports:
+      - "3040:80"
+    restart: unless-stopped
