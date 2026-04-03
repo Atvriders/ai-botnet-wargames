@@ -14,7 +14,7 @@ import {
 
 // ── Sizing by node type ──────────────────────────────────────
 const NODE_SIZES: Record<string, number> = {
-  server: 4,
+  server: 6,
   isp: 7,
   datacenter: 8,
   backbone: 10,
@@ -305,7 +305,7 @@ export function GlobeMap() {
       };
 
       // ── Draw wireframe (batched into one path) ──────────────
-      ctx.strokeStyle = 'rgba(0, 255, 65, 0.06)';
+      ctx.strokeStyle = 'rgba(0, 255, 65, 0.15)';
       ctx.lineWidth = 0.5;
       ctx.beginPath();
 
@@ -322,6 +322,30 @@ export function GlobeMap() {
           prevScreen = [sx, sy];
           prevFront = front;
         }
+      }
+      ctx.stroke();
+
+      // ── Equator ring (bright green outline) ────────────────
+      ctx.strokeStyle = 'rgba(0, 255, 65, 0.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      const eqSegments = 120;
+      let eqPrev: [number, number] | null = null;
+      let eqPrevFront = false;
+      for (let i = 0; i <= eqSegments; i++) {
+        const lng = (360 / eqSegments) * i;
+        const ep: Vec3 = [
+          Math.sin((lng * Math.PI) / 180),
+          0,
+          Math.cos((lng * Math.PI) / 180),
+        ];
+        const [esx, esy, , efront] = transform(ep);
+        if (eqPrev !== null && eqPrevFront && efront) {
+          ctx.moveTo(eqPrev[0], eqPrev[1]);
+          ctx.lineTo(esx, esy);
+        }
+        eqPrev = [esx, esy];
+        eqPrevFront = efront;
       }
       ctx.stroke();
 
@@ -629,6 +653,8 @@ export function GlobeMap() {
       style={{
         width: '100%',
         height: '100%',
+        flex: 1,
+        minHeight: 0,
         position: 'relative',
         overflow: 'hidden',
         background: '#000',

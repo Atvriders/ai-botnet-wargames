@@ -111,6 +111,9 @@ const styles: Record<string, CSSProperties> = {
 };
 
 function formatBP(n: number): string {
+  if (n >= 1e15) return (n / 1e15).toFixed(1) + 'Q';
+  if (n >= 1e12) return (n / 1e12).toFixed(1) + 'T';
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
   if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
   if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
   return Math.floor(n).toString();
@@ -164,10 +167,15 @@ export function HudBar() {
 
         <div style={styles.stat}>
           <span style={styles.statLabel}>Nodes</span>
-          <span style={{ ...styles.statValue, color: '#FF0040' }}>
-            {nodesInfected}<span style={{ color: '#337744', fontSize: 11 }}>/</span>
-            {nodesDown}<span style={{ color: '#337744', fontSize: 11 }}>/</span>
-            {totalNodes}
+          <span style={{ ...styles.statValue, fontSize: 13 }}>
+            <span style={{ color: '#FFB300' }}>{nodesInfected}</span>
+            <span style={{ color: '#337744', fontSize: 10 }}> inf</span>
+            <span style={{ color: '#337744', fontSize: 11 }}> | </span>
+            <span style={{ color: '#FF0040' }}>{nodesDown}</span>
+            <span style={{ color: '#337744', fontSize: 10 }}> down</span>
+            <span style={{ color: '#337744', fontSize: 11 }}> | </span>
+            <span style={{ color: '#00FF41' }}>{totalNodes}</span>
+            <span style={{ color: '#337744', fontSize: 10 }}> total</span>
           </span>
         </div>
         <div style={styles.separator} />
