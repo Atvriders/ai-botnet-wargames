@@ -84,6 +84,7 @@ export interface GameState {
 
   // Selection
   selectedNode: string | null;
+  highlightFilter: 'none' | 'infected' | 'down';
 
   // Meta
   gameStarted: boolean;
@@ -103,6 +104,7 @@ export interface GameState {
   selectNode: (id: string | null) => void;
   toggleAutoTarget: () => void;
   setMessage: (msg: string) => void;
+  setHighlightFilter: (filter: 'none' | 'infected' | 'down') => void;
   save: () => void;
   load: () => void;
 }

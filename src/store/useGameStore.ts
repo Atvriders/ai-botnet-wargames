@@ -70,6 +70,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   counterAttackTimer: 60,
   conqueredRegions: [],
   selectedNode: null,
+  highlightFilter: 'none',
   saveTimer: 0,
 
   tick: (dt: number) => {
@@ -314,7 +315,14 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   selectAttack: (id: string) => set({ selectedAttack: id }),
   selectNode: (id: string | null) => set({ selectedNode: id }),
-  toggleAutoTarget: () => set({ autoTargeting: !get().autoTargeting }),
+  toggleAutoTarget: () => {
+    const s = get();
+    if (!s.upgrades.autoTarget?.purchased) return;
+    set({ autoTargeting: !s.autoTargeting });
+  },
+  setHighlightFilter: (filter) => set((s) => ({
+    highlightFilter: s.highlightFilter === filter ? 'none' : filter,
+  })),
   setMessage: (msg: string) => set({ message: msg, messageTimer: 3 }),
 
   save: () => {

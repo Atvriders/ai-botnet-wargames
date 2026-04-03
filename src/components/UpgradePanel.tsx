@@ -43,7 +43,7 @@ const styles: Record<string, CSSProperties> = {
   },
   tierHeader: {
     fontFamily: 'var(--font-hud)',
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: 700,
     color: '#337744',
     letterSpacing: 2,
@@ -81,20 +81,20 @@ const styles: Record<string, CSSProperties> = {
     lineHeight: 1.2,
   },
   desc: {
-    fontSize: 9,
+    fontSize: 11,
     color: '#337744',
     lineHeight: 1.3,
     marginTop: 1,
   },
   cost: {
-    fontSize: 10,
+    fontSize: 11,
     fontFamily: 'var(--font-terminal)',
     fontWeight: 700,
     flexShrink: 0,
     marginTop: 1,
   },
   locked: {
-    fontSize: 8,
+    fontSize: 11,
     color: '#553300',
     fontStyle: 'italic',
     marginTop: 2,

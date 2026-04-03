@@ -11,6 +11,7 @@ import {
   greatCircleArc,
   Vec3,
 } from '../lib/globe';
+import { CONTINENTS } from '../lib/continents';
 
 // ── Sizing by node type ──────────────────────────────────────
 const NODE_SIZES: Record<string, number> = {
@@ -95,6 +96,11 @@ export function GlobeMap() {
 
   // Keep ref in sync so the render loop never needs to restart
   selectedNodeIdRef.current = selectedNodeId;
+
+  // Highlight filter
+  const highlightFilter = useGameStore((s) => s.highlightFilter);
+  const highlightFilterRef = useRef(highlightFilter);
+  highlightFilterRef.current = highlightFilter;
 
   // Store actions
   const infectNode = useGameStore((s) => s.infectNode);
@@ -285,13 +291,13 @@ export function GlobeMap() {
       ctx.fillRect(0, 0, cw, ch);
 
       // ── Subtle atmosphere glow ─────────────────────────────
-      const atmosGrad = ctx.createRadialGradient(cx, cy, radius * 0.9, cx, cy, radius * 1.35);
-      atmosGrad.addColorStop(0, 'rgba(0,255,65,0.015)');
-      atmosGrad.addColorStop(0.5, 'rgba(0,255,65,0.008)');
+      const atmosGrad = ctx.createRadialGradient(cx, cy, radius * 0.2, cx, cy, radius * 1.4);
+      atmosGrad.addColorStop(0, 'rgba(0,255,65,0.03)');
+      atmosGrad.addColorStop(0.6, 'rgba(0,255,65,0.012)');
       atmosGrad.addColorStop(1, 'rgba(0,255,65,0)');
       ctx.fillStyle = atmosGrad;
       ctx.beginPath();
-      ctx.arc(cx, cy, radius * 1.35, 0, Math.PI * 2);
+      ctx.arc(cx, cy, radius * 1.4, 0, Math.PI * 2);
       ctx.fill();
 
       // ── Helper: transform a 3D unit-sphere point to screen ─
@@ -305,7 +311,7 @@ export function GlobeMap() {
       };
 
       // ── Draw wireframe (batched into one path) ──────────────
-      ctx.strokeStyle = 'rgba(0, 255, 65, 0.15)';
+      ctx.strokeStyle = 'rgba(0, 255, 65, 0.12)';
       ctx.lineWidth = 0.5;
       ctx.beginPath();
 
@@ -348,6 +354,29 @@ export function GlobeMap() {
         eqPrevFront = efront;
       }
       ctx.stroke();
+
+      // ── Draw continent outlines ────────────────────────────
+      ctx.strokeStyle = 'rgba(0, 255, 65, 0.4)';
+      ctx.lineWidth = 1.5;
+      for (const polygon of CONTINENTS) {
+        ctx.beginPath();
+        let prevScreen: [number, number] | null = null;
+        let prevFront = false;
+
+        for (let i = 0; i < polygon.length; i++) {
+          const [lat, lng] = polygon[i];
+          const p3 = latLngToXYZ(lat, lng, 1);
+          const [sx, sy, , front] = transform(p3);
+
+          if (prevScreen !== null && prevFront && front) {
+            ctx.moveTo(prevScreen[0], prevScreen[1]);
+            ctx.lineTo(sx, sy);
+          }
+          prevScreen = [sx, sy];
+          prevFront = front;
+        }
+        ctx.stroke();
+      }
 
       // ── Get current game state ─────────────────────────────
       const state = useGameStore.getState();
@@ -449,11 +478,20 @@ export function GlobeMap() {
       // Sort: back-facing first (lower z), front-facing on top
       const sortedNodes = [...projected].sort((a, b) => a.z - b.z);
 
+      const curHighlightFilter = highlightFilterRef.current;
+
       for (const pn of sortedNodes) {
         const { node, sx, sy, front } = pn;
         const baseSize = (NODE_SIZES[node.type] || 5) * zoom;
         const isSelected = selectedNodeIdRef.current === node.id || activeAttack === node.id;
-        const alpha = front ? 1 : 0.15;
+
+        // ── Highlight filter dimming ─────────────────────────
+        const isHighlighted =
+          curHighlightFilter === 'none' ||
+          (curHighlightFilter === 'infected' && node.status === 'infected') ||
+          (curHighlightFilter === 'down' && node.status === 'down');
+        const filterAlpha = curHighlightFilter === 'none' ? 1 : (isHighlighted ? 1 : 0.2);
+        const alpha = (front ? 1 : 0.15) * filterAlpha;
 
         ctx.globalAlpha = alpha;
 
@@ -537,6 +575,25 @@ export function GlobeMap() {
           ctx.lineWidth = 0.5;
           ctx.beginPath();
           ctx.arc(sx, sy, pulseR, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // ── Highlight filter ring ────────────────────────────
+        if (front && isHighlighted && curHighlightFilter !== 'none') {
+          const ringColor = curHighlightFilter === 'infected' ? 'rgba(255,179,0,' : 'rgba(255,0,64,';
+          const pulseAlpha = 0.5 + Math.sin(now * 0.006) * 0.3;
+          ctx.strokeStyle = ringColor + pulseAlpha + ')';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(sx, sy, baseSize + 6, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Outer pulsing ring
+          const outerR = baseSize + 10 + Math.sin(now * 0.004) * 3;
+          ctx.strokeStyle = ringColor + (pulseAlpha * 0.4) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(sx, sy, outerR, 0, Math.PI * 2);
           ctx.stroke();
         }
 

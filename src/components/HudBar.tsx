@@ -42,7 +42,7 @@ const styles: Record<string, CSSProperties> = {
     minWidth: 70,
   },
   statLabel: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: 600,
     color: '#337744',
     textTransform: 'uppercase',
@@ -75,7 +75,7 @@ const styles: Record<string, CSSProperties> = {
     position: 'relative',
   },
   healthLabel: {
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: 600,
     color: '#337744',
     textTransform: 'uppercase',
@@ -89,7 +89,7 @@ const styles: Record<string, CSSProperties> = {
     textAlign: 'right',
   },
   autoBtn: {
-    fontSize: 10,
+    fontSize: 11,
     fontFamily: 'var(--font-terminal)',
     padding: '4px 10px',
     border: '1px solid rgba(0,255,65,0.2)',
@@ -124,7 +124,9 @@ export function HudBar() {
     botPower, botsActive, maxBots, bandwidth,
     internetHealth, nodesInfected, nodesDown, totalNodes,
     waveNumber, autoTargeting, toggleAutoTarget,
+    highlightFilter, setHighlightFilter,
   } = useGameStore();
+  const upgrades = useGameStore(s => s.upgrades);
 
   const healthColor =
     internetHealth > 60 ? '#00FF41' :
@@ -168,14 +170,32 @@ export function HudBar() {
         <div style={styles.stat}>
           <span style={styles.statLabel}>Nodes</span>
           <span style={{ ...styles.statValue, fontSize: 13 }}>
-            <span style={{ color: '#FFB300' }}>{nodesInfected}</span>
-            <span style={{ color: '#337744', fontSize: 10 }}> inf</span>
+            <span
+              onClick={() => setHighlightFilter('infected')}
+              style={{
+                cursor: 'pointer',
+                color: '#FFB300',
+                textDecoration: highlightFilter === 'infected' ? 'underline' : 'none',
+                opacity: highlightFilter === 'infected' ? 1 : 0.7,
+              }}
+            >
+              {nodesInfected} <span style={{ fontSize: 11 }}>inf</span>
+            </span>
             <span style={{ color: '#337744', fontSize: 11 }}> | </span>
-            <span style={{ color: '#FF0040' }}>{nodesDown}</span>
-            <span style={{ color: '#337744', fontSize: 10 }}> down</span>
+            <span
+              onClick={() => setHighlightFilter('down')}
+              style={{
+                cursor: 'pointer',
+                color: '#FF0040',
+                textDecoration: highlightFilter === 'down' ? 'underline' : 'none',
+                opacity: highlightFilter === 'down' ? 1 : 0.7,
+              }}
+            >
+              {nodesDown} <span style={{ fontSize: 11 }}>down</span>
+            </span>
             <span style={{ color: '#337744', fontSize: 11 }}> | </span>
             <span style={{ color: '#00FF41' }}>{totalNodes}</span>
-            <span style={{ color: '#337744', fontSize: 10 }}> total</span>
+            <span style={{ color: '#337744', fontSize: 11 }}> total</span>
           </span>
         </div>
         <div style={styles.separator} />
@@ -196,17 +216,19 @@ export function HudBar() {
         </div>
       </div>
 
-      <button
-        style={{
-          ...styles.autoBtn,
-          borderColor: autoTargeting ? '#00FF41' : 'rgba(0,255,65,0.2)',
-          background: autoTargeting ? 'rgba(0,255,65,0.1)' : '#0d1117',
-          boxShadow: autoTargeting ? '0 0 8px rgba(0,255,65,0.2)' : 'none',
-        }}
-        onClick={toggleAutoTarget}
-      >
-        {autoTargeting ? '[ AUTO: ON ]' : '[ AUTO: OFF ]'}
-      </button>
+      {upgrades.autoTarget?.purchased && (
+        <button
+          style={{
+            ...styles.autoBtn,
+            borderColor: autoTargeting ? '#00FF41' : 'rgba(0,255,65,0.2)',
+            background: autoTargeting ? 'rgba(0,255,65,0.1)' : '#0d1117',
+            boxShadow: autoTargeting ? '0 0 8px rgba(0,255,65,0.2)' : 'none',
+          }}
+          onClick={toggleAutoTarget}
+        >
+          {autoTargeting ? '[ AUTO: ON ]' : '[ AUTO: OFF ]'}
+        </button>
+      )}
     </div>
   );
 }

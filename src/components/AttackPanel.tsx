@@ -67,14 +67,14 @@ const styles: Record<string, CSSProperties> = {
     lineHeight: 1.2,
   },
   attackMeta: {
-    fontSize: 9,
+    fontSize: 11,
     color: '#553333',
     display: 'flex',
     gap: 8,
     marginTop: 1,
   },
   typeBadge: {
-    fontSize: 8,
+    fontSize: 11,
     padding: '1px 4px',
     borderRadius: 2,
     textTransform: 'uppercase',
@@ -83,7 +83,7 @@ const styles: Record<string, CSSProperties> = {
     fontFamily: 'var(--font-hud)',
   },
   unlockBtn: {
-    fontSize: 9,
+    fontSize: 11,
     fontFamily: 'var(--font-terminal)',
     padding: '2px 6px',
     border: '1px solid rgba(255,0,64,0.3)',
@@ -107,7 +107,7 @@ const styles: Record<string, CSSProperties> = {
   },
   infoLabel: {
     color: '#337744',
-    fontSize: 10,
+    fontSize: 11,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -162,7 +162,7 @@ const styles: Record<string, CSSProperties> = {
     marginTop: 4,
   },
   connChip: {
-    fontSize: 8,
+    fontSize: 11,
     padding: '2px 5px',
     border: '1px solid rgba(0,255,65,0.15)',
     color: '#337744',
@@ -219,7 +219,7 @@ export function AttackPanel({ selectedNode, onInfectNode, onAttackNode }: Attack
           ))}
           {locked.length > 0 && (
             <div style={{
-              fontSize: 9, color: '#333', padding: '6px 4px',
+              fontSize: 11, color: '#333', padding: '6px 4px',
               textTransform: 'uppercase', letterSpacing: 1,
               fontFamily: 'var(--font-hud)',
             }}>
@@ -318,7 +318,7 @@ export function AttackPanel({ selectedNode, onInfectNode, onAttackNode }: Attack
             </div>
 
             {/* Description */}
-            <div style={{ fontSize: 10, color: '#337744', marginTop: 6, lineHeight: 1.4, fontStyle: 'italic' }}>
+            <div style={{ fontSize: 11, color: '#337744', marginTop: 6, lineHeight: 1.4, fontStyle: 'italic' }}>
               {node.description}
             </div>
 
@@ -373,7 +373,7 @@ export function AttackPanel({ selectedNode, onInfectNode, onAttackNode }: Attack
           <div style={styles.noSelection}>
             Select a node on the map to view details.
             <br /><br />
-            <span style={{ color: '#224422', fontSize: 9 }}>
+            <span style={{ color: '#224422', fontSize: 11 }}>
               Left-click: Select &bull; Right-click: Infect/Attack
             </span>
           </div>

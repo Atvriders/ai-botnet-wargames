@@ -13,6 +13,7 @@ export const INITIAL_UPGRADES: Record<string, BotnetUpgrade> = {
   darkWeb: { id: 'darkWeb', name: 'Dark Web Tunnels', description: '+2x stealth', cost: 4000, effect: 'stealth', effectValue: 2, purchased: false, requires: 'proxyChain', tier: 2, icon: '🕳️' },
   botnetArmy: { id: 'botnetArmy', name: 'Botnet Army', description: '+500 max bots', cost: 8000, effect: 'botCount', effectValue: 500, purchased: false, requires: 'botRecruiter', tier: 2, icon: '⚔️' },
   bandwidthTheft: { id: 'bandwidthTheft', name: 'Bandwidth Theft', description: '+20 Gbps attack bandwidth', cost: 6000, effect: 'bandwidth', effectValue: 20, purchased: false, tier: 2, icon: '📡' },
+  autoTarget: { id: 'autoTarget', name: 'Auto-Targeting Module', description: 'Unlocks automatic target selection', cost: 5000, effect: 'evolution', effectValue: 1, purchased: false, tier: 2, icon: '🎯' },
 
   // Tier 3 — APT Operator (4-8 hours, costs 50K-500K BP)
   aiMutation: { id: 'aiMutation', name: 'AI Mutation Engine', description: '+3x attack power', cost: 100000, effect: 'attackPower', effectValue: 3, purchased: false, requires: 'polymorphic', tier: 3, icon: '🧠' },
