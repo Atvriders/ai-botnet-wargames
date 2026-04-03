@@ -2,11 +2,12 @@ import { useEffect, useRef, CSSProperties } from 'react';
 
 const styles: Record<string, CSSProperties> = {
   container: {
-    height: 120,
-    background: 'rgba(0,0,0,0.9)',
+    height: 140,
+    background: 'rgba(0,0,0,0.95)',
     borderTop: '1px solid rgba(0,255,65,0.15)',
-    fontFamily: 'var(--font-terminal)',
-    fontSize: 11,
+    fontFamily: "'Share Tech Mono', 'Courier New', monospace",
+    fontSize: 12,
+    lineHeight: 1.6,
     display: 'flex',
     flexDirection: 'column',
     flexShrink: 0,
@@ -39,11 +40,9 @@ const styles: Record<string, CSSProperties> = {
   },
   logArea: {
     flex: 1,
-    overflow: 'hidden',
+    overflowY: 'auto',
+    overflowX: 'hidden',
     padding: '4px 12px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
   },
   line: {
     lineHeight: 1.5,

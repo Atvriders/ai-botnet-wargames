@@ -9,6 +9,8 @@ const TIER_NAMES: Record<number, string> = {
   4: 'NATION STATE',
   5: 'CYBER WEAPON',
   6: 'DIGITAL GOD',
+  7: 'DIGITAL APOCALYPSE',
+  8: 'BEYOND',
 };
 
 const styles: Record<string, CSSProperties> = {

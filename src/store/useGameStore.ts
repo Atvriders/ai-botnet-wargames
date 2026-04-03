@@ -11,6 +11,33 @@ const buildNodeMap = (): Record<string, NetworkNode> => {
 };
 
 const SAVE_KEY = 'ai-botnet-wargames-save';
+const AUTO_SAVE_INTERVAL = 30; // seconds
+
+export function formatNumber(n: number): string {
+  if (n >= 1e12) return (n / 1e12).toFixed(1) + 'T';
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+  return Math.floor(n).toString();
+}
+
+/** Collect all unique regions from node data */
+function getAllRegions(nodes: Record<string, NetworkNode>): string[] {
+  const regions = new Set<string>();
+  for (const id in nodes) regions.add(nodes[id].region);
+  return Array.from(regions);
+}
+
+/** Check if a region is conquered (all nodes infected or down) */
+function isRegionConquered(region: string, nodes: Record<string, NetworkNode>): boolean {
+  for (const id in nodes) {
+    const n = nodes[id];
+    if (n.region === region && n.status !== 'infected' && n.status !== 'down') {
+      return false;
+    }
+  }
+  return true;
+}
 
 export const useGameStore = create<GameState>((set, get) => ({
   botPower: 0,
@@ -39,6 +66,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   message: '',
   messageTimer: 0,
   autoTargeting: false,
+  counterAttackTimer: 60,
+  conqueredRegions: [],
+  selectedNode: null,
+  saveTimer: 0,
 
   tick: (dt: number) => {
     const s = get();
@@ -50,14 +81,16 @@ export const useGameStore = create<GameState>((set, get) => ({
     let infected = 0;
     let down = 0;
     let totalImportance = 0;
-    let downImportance = 0;
+    let activeImportance = 0;
 
     for (const id in nodes) {
       const n = nodes[id];
       totalImportance += n.importance;
+      if (n.status !== 'down') {
+        activeImportance += n.importance;
+      }
       if (n.status === 'down') {
         down++;
-        downImportance += n.importance;
       }
       if (n.status === 'infected' || n.infectionLevel >= 100) {
         infected++;
@@ -109,7 +142,6 @@ export const useGameStore = create<GameState>((set, get) => ({
         if (newHealth <= 0) {
           nodes[activeAttack] = { ...target, health: 0, status: 'down', infectionLevel: 100 };
           down++;
-          downImportance += target.importance;
           activeAttack = null;
           attackProgress = 0;
         } else {
@@ -131,10 +163,64 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
     }
 
-    const internetHealth = Math.max(0, 100 - (downImportance / totalImportance) * 100);
+    // --- Counter-attack waves ---
+    let counterAttackTimer = s.counterAttackTimer - dt;
+    let msg = s.message;
+    let msgTimer = Math.max(0, s.messageTimer - dt);
+    const hasPersistence = s.upgrades['persistence']?.purchased;
+
+    if (counterAttackTimer <= 0 && !hasPersistence) {
+      // Defenders try to clean up 1-3 random infected nodes
+      const infectedNodes = Object.values(nodes).filter(n => n.status === 'infected');
+      const cleanCount = Math.min(infectedNodes.length, Math.floor(Math.random() * 3) + 1);
+      if (cleanCount > 0) {
+        // Shuffle and pick
+        const shuffled = infectedNodes.sort(() => Math.random() - 0.5).slice(0, cleanCount);
+        for (const target of shuffled) {
+          const newLevel = Math.max(0, target.infectionLevel - 10);
+          nodes[target.id] = {
+            ...nodes[target.id],
+            infectionLevel: newLevel,
+            status: newLevel >= 100 ? 'infected' : newLevel > 0 ? 'online' : 'online',
+          };
+        }
+        msg = `Counter-attack! Defenders cleaned ${cleanCount} node${cleanCount > 1 ? 's' : ''} (-10% infection)`;
+        msgTimer = 4;
+      }
+      // Reset timer — higher stealth = less frequent counter-attacks
+      counterAttackTimer = 60 / s.stealthLevel;
+    }
+
+    // --- Region conquest bonuses ---
+    let attackMultiplier = s.attackMultiplier;
+    const conqueredRegions = [...s.conqueredRegions];
+    const allRegions = getAllRegions(nodes);
+    for (const region of allRegions) {
+      if (!conqueredRegions.includes(region) && isRegionConquered(region, nodes)) {
+        conqueredRegions.push(region);
+        attackMultiplier *= 1.1; // +10% permanent bonus
+        msg = `Region conquered: ${region}! +10% attack power!`;
+        msgTimer = 5;
+      }
+    }
+
+    // Internet health weighted by importance
+    // activeImportance is sum of importance where status != 'down'
+    const internetHealth = totalImportance > 0
+      ? Math.max(0, (activeImportance / totalImportance) * 100)
+      : 0;
+
     const bp = bpPerSec * dt;
     const newBP = s.botPower + bp;
     const wave = Math.floor(down / 5) + 1;
+
+    // Auto-save timer
+    let saveTimer = s.saveTimer + dt;
+    if (saveTimer >= AUTO_SAVE_INTERVAL) {
+      saveTimer = 0;
+      // Schedule save after state update
+      setTimeout(() => get().save(), 0);
+    }
 
     set({
       nodes,
@@ -149,6 +235,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       attackCooldown: cooldown,
       botsActive: Math.min(s.maxBots, infected * 5 + 1),
       gameWon: internetHealth <= 0,
+      counterAttackTimer,
+      conqueredRegions,
+      attackMultiplier,
+      message: msg,
+      messageTimer: msgTimer,
+      saveTimer,
     });
   },
 
@@ -204,7 +296,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       case 'bandwidth': newState.bandwidth = s.bandwidth + upg.effectValue; break;
       case 'botCount': newState.maxBots = s.maxBots + upg.effectValue; break;
       case 'evolution': newState.evolutionLevel = s.evolutionLevel + upg.effectValue; break;
-      case 'persistence': break;
+      case 'persistence': break; // persistence is checked by flag in counter-attack logic
     }
     set(newState as any);
   },
@@ -220,6 +312,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   selectAttack: (id: string) => set({ selectedAttack: id }),
+  selectNode: (id: string | null) => set({ selectedNode: id }),
   toggleAutoTarget: () => set({ autoTargeting: !get().autoTargeting }),
   setMessage: (msg: string) => set({ message: msg, messageTimer: 3 }),
 
@@ -245,6 +338,9 @@ export const useGameStore = create<GameState>((set, get) => ({
       selectedAttack: s.selectedAttack,
       autoTargeting: s.autoTargeting,
       gameWon: s.gameWon,
+      counterAttackTimer: s.counterAttackTimer,
+      conqueredRegions: s.conqueredRegions,
+      selectedNode: s.selectedNode,
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
   },
@@ -262,6 +358,11 @@ export const useGameStore = create<GameState>((set, get) => ({
         activeAttack: null,
         attackProgress: 0,
         attackCooldown: 0,
+        saveTimer: 0,
+        // Ensure new fields have defaults if loading old saves
+        counterAttackTimer: data.counterAttackTimer ?? 60,
+        conqueredRegions: data.conqueredRegions ?? [],
+        selectedNode: data.selectedNode ?? null,
       });
     } catch { /* ignore corrupt saves */ }
   },

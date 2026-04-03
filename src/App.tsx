@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback, CSSProperties } from 'react';
 import { useGameStore } from './store/useGameStore';
 import { HudBar } from './components/HudBar';
-import { NetworkMap } from './components/NetworkMap';
+import { GlobeMap } from './components/GlobeMap';
 import { UpgradePanel } from './components/UpgradePanel';
 import { AttackPanel } from './components/AttackPanel';
 import { TerminalLog, LogEntry } from './components/TerminalLog';
@@ -31,7 +31,7 @@ function getTimestamp(): string {
 }
 
 export default function App() {
-  const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const selectedNode = useGameStore(s => s.selectedNode);
   const [logs, setLogs] = useState<LogEntry[]>([
     { time: getTimestamp(), text: 'BOTNET C2 INITIALIZED. AWAITING COMMANDS.', type: 'success' },
     { time: getTimestamp(), text: 'Home Router #1 compromised. Patient zero online.', type: 'info' },
@@ -176,12 +176,7 @@ export default function App() {
       <HudBar />
       <div style={styles.middle}>
         <UpgradePanel />
-        <NetworkMap
-          selectedNode={selectedNode}
-          onSelectNode={setSelectedNode}
-          onInfectNode={handleInfect}
-          onAttackNode={handleAttack}
-        />
+        <GlobeMap />
         <AttackPanel
           selectedNode={selectedNode}
           onInfectNode={handleInfect}

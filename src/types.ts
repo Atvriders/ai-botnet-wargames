@@ -6,6 +6,8 @@ export interface NetworkNode {
   type: 'server' | 'isp' | 'datacenter' | 'backbone' | 'cdn' | 'dns' | 'exchange' | 'satellite';
   x: number; // 0-100 percentage position on map
   y: number;
+  lat: number;
+  lng: number;
   health: number; // 0-100
   maxHealth: number;
   defense: number; // damage reduction
@@ -76,12 +78,20 @@ export interface GameState {
   attackVectors: Record<string, AttackVector>;
   selectedAttack: string;
 
+  // Counter-attack
+  counterAttackTimer: number;
+  conqueredRegions: string[];
+
+  // Selection
+  selectedNode: string | null;
+
   // Meta
   gameStarted: boolean;
   gameWon: boolean;
   message: string;
   messageTimer: number;
   autoTargeting: boolean;
+  saveTimer: number;
 
   // Actions
   tick: (dt: number) => void;
@@ -90,6 +100,7 @@ export interface GameState {
   buyUpgrade: (id: string) => void;
   unlockAttack: (id: string) => void;
   selectAttack: (id: string) => void;
+  selectNode: (id: string | null) => void;
   toggleAutoTarget: () => void;
   setMessage: (msg: string) => void;
   save: () => void;

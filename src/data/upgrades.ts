@@ -37,4 +37,17 @@ export const INITIAL_UPGRADES: Record<string, BotnetUpgrade> = {
   singularity: { id: 'singularity', name: 'The Singularity', description: '+500x attack power — total control', cost: 5000000, effect: 'attackPower', effectValue: 500, purchased: false, requires: 'stuxnet2', tier: 6, icon: '🌀' },
   omniscience: { id: 'omniscience', name: 'Omniscience', description: '+500x spread — infect everything instantly', cost: 8000000, effect: 'spreadSpeed', effectValue: 500, purchased: false, requires: 'skynet', tier: 6, icon: '👁️' },
   evolution: { id: 'evolution', name: 'Full Evolution', description: 'Evolve past all defenses', cost: 3000000, effect: 'evolution', effectValue: 100, purchased: false, tier: 6, icon: '🧬' },
+
+  // Tier 7 — Digital Apocalypse
+  neuralHijack: { id: 'neuralHijack', name: 'Neural Hijack', description: '+1000x attack power', cost: 50000000, effect: 'attackPower', effectValue: 1000, purchased: false, requires: 'singularity', tier: 7, icon: '🧠' },
+  temporalLoop: { id: 'temporalLoop', name: 'Temporal Loop', description: 'Attacks 3x faster', cost: 30000000, effect: 'attackPower', effectValue: 3, purchased: false, requires: 'stuxnet2', tier: 7, icon: '⏳' },
+  hiveMind: { id: 'hiveMind', name: 'Hive Mind', description: '+500K max bots', cost: 40000000, effect: 'botCount', effectValue: 500000, purchased: false, requires: 'megaBotnet', tier: 7, icon: '🐝' },
+  darkMatterTap: { id: 'darkMatterTap', name: 'Dark Matter Tap', description: '+10K Gbps bandwidth', cost: 35000000, effect: 'bandwidth', effectValue: 10000, purchased: false, requires: 'terabitFlood', tier: 7, icon: '🌑' },
+  phantomNet: { id: 'phantomNet', name: 'Phantom Network', description: '+1000x stealth', cost: 25000000, effect: 'stealth', effectValue: 1000, purchased: false, requires: 'deepfakeDecoy', tier: 7, icon: '👤' },
+
+  // Tier 8 — Beyond
+  realityOverride: { id: 'realityOverride', name: 'Reality Override', description: '+5000x attack — rewrite the simulation', cost: 500000000, effect: 'attackPower', effectValue: 5000, purchased: false, requires: 'neuralHijack', tier: 8, icon: '🌀' },
+  quantumEntangle: { id: 'quantumEntangle', name: 'Quantum Entanglement', description: '+5000x spread — instant infection', cost: 300000000, effect: 'spreadSpeed', effectValue: 5000, purchased: false, requires: 'omniscience', tier: 8, icon: '⚡' },
+  eschaton: { id: 'eschaton', name: 'The Eschaton', description: '+1M max bots — the final swarm', cost: 1000000000, effect: 'botCount', effectValue: 1000000, purchased: false, requires: 'hiveMind', tier: 8, icon: '🔥' },
+  godMode: { id: 'godMode', name: 'God Mode', description: '+100K Gbps — unlimited bandwidth', cost: 800000000, effect: 'bandwidth', effectValue: 100000, purchased: false, requires: 'darkMatterTap', tier: 8, icon: '♾️' },
 };
