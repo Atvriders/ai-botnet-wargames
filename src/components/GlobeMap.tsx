@@ -90,7 +90,11 @@ export function GlobeMap() {
 
   // Selected node (local state so we can show highlight + pass to panels)
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const selectedNodeIdRef = useRef<string | null>(null);
   const [tooltip, setTooltip] = useState<Tooltip | null>(null);
+
+  // Keep ref in sync so the render loop never needs to restart
+  selectedNodeIdRef.current = selectedNodeId;
 
   // Store actions
   const infectNode = useGameStore((s) => s.infectNode);
@@ -300,9 +304,10 @@ export function GlobeMap() {
         return [sx, sy, r[2], front];
       };
 
-      // ── Draw wireframe ─────────────────────────────────────
+      // ── Draw wireframe (batched into one path) ──────────────
       ctx.strokeStyle = 'rgba(0, 255, 65, 0.06)';
       ctx.lineWidth = 0.5;
+      ctx.beginPath();
 
       for (const line of wireframe) {
         let prevScreen: [number, number] | null = null;
@@ -311,15 +316,14 @@ export function GlobeMap() {
         for (const pt of line) {
           const [sx, sy, , front] = transform(pt);
           if (prevScreen !== null && prevFront && front) {
-            ctx.beginPath();
             ctx.moveTo(prevScreen[0], prevScreen[1]);
             ctx.lineTo(sx, sy);
-            ctx.stroke();
           }
           prevScreen = [sx, sy];
           prevFront = front;
         }
       }
+      ctx.stroke();
 
       // ── Get current game state ─────────────────────────────
       const state = useGameStore.getState();
@@ -424,7 +428,7 @@ export function GlobeMap() {
       for (const pn of sortedNodes) {
         const { node, sx, sy, front } = pn;
         const baseSize = (NODE_SIZES[node.type] || 5) * zoom;
-        const isSelected = selectedNodeId === node.id || activeAttack === node.id;
+        const isSelected = selectedNodeIdRef.current === node.id || activeAttack === node.id;
         const alpha = front ? 1 : 0.15;
 
         ctx.globalAlpha = alpha;
@@ -601,9 +605,11 @@ export function GlobeMap() {
 
       // ── Scanline overlay (very subtle CRT feel) ────────────
       ctx.fillStyle = 'rgba(0,0,0,0.03)';
+      ctx.beginPath();
       for (let y = 0; y < ch; y += 3) {
-        ctx.fillRect(0, y, cw, 1);
+        ctx.rect(0, y, cw, 1);
       }
+      ctx.fill();
 
       animFrameRef.current = requestAnimationFrame(draw);
     };
@@ -615,7 +621,7 @@ export function GlobeMap() {
       cancelAnimationFrame(animFrameRef.current);
       ro.disconnect();
     };
-  }, [selectedNodeId]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- selectedNodeId accessed via ref to avoid restarting the render loop
 
   return (
     <div
