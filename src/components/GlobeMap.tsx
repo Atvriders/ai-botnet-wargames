@@ -149,7 +149,6 @@ export function GlobeMap() {
     const handleMouseMove = (e: MouseEvent) => {
       if (draggingRef.current) {
         const dx = e.clientX - lastMouseRef.current.x;
-        const dy = e.clientY - lastMouseRef.current.y;
         rotYRef.current += dx * 0.005;
         // rotXRef.current is locked — no vertical tilt during drag
         velXRef.current = 0; // no vertical inertia
